@@ -41,9 +41,9 @@ public class MovieApiController {
         //ROW 개수
         String itemPerPage = "10";
         //다양성영화(Y)/상업영화(N)/전체(default)
-        String multiMovieYn = "Y";
+        String multiMovieYn = "";
         //한국영화(K)/외국영화(F)/전체(default)
-        String repNationCd = "F";
+        String repNationCd = "";
         //상영지역별 코드/전체(default)
         String wideAreaCd = "";
 
