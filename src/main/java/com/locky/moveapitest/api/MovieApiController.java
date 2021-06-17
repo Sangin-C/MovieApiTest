@@ -9,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
@@ -27,6 +28,7 @@ public class MovieApiController {
     private final DailyMovieRepository dailyMovieRepository;
     private final WeeklyMovieRepository weeklyMovieRepository;
     private final MovieListRepository movieListRepository;
+    private final MovieInfoRepository movieInfoRepository;
 
     //발급키키
     String key = "f778bea14d8ca8349bc583598d1288e9";
@@ -90,7 +92,7 @@ public class MovieApiController {
                 dailyMovie.setTargetDt(targetDt);
                 dailyMovie.setBoxofficeType(boxofficeType);
                 dailyMovie.setShowRange(showRange);
-                dailyMovieRepository.save(dailyMovie);
+                //dailyMovieRepository.save(dailyMovie);
             }
         }catch(Exception e){
             e.getMessage();
@@ -107,8 +109,9 @@ public class MovieApiController {
         SimpleDateFormat todayFormat = new SimpleDateFormat("yyyyMMdd");
 
         //전주 박스오피스 조회 ( 해당주는 안나옴.. )
-        LocalDateTime time = LocalDateTime.now().minusDays(7);
-        String targetDt =  time.format(DateTimeFormatter.ofPattern("yyyMMdd"));
+        //LocalDateTime time = LocalDateTime.now().minusDays(7);
+        //String targetDt =  time.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String targetDt = "20210530";
 
         //주간/주말/주중 선택
         String weekGb = "0";
@@ -164,7 +167,7 @@ public class MovieApiController {
                 weeklyMovie.setBoxofficeType(boxofficeType);
                 weeklyMovie.setShowRange(showRange);
                 weeklyMovie.setYearWeekTime(yearWeekTime);
-                weeklyMovieRepository.save(weeklyMovie);
+                //weeklyMovieRepository.save(weeklyMovie);
             }
         }catch(Exception e){
             e.getMessage();
@@ -274,7 +277,7 @@ public class MovieApiController {
                 }
                 //JSON object -> Java Object(Entity) 변환
                 MovieList movieList = objectMapper.readValue(movieListResultObject.toString(), MovieList.class);
-                movieListRepository.save(movieList);
+                //movieListRepository.save(movieList);
             }
 
         }catch(Exception e){
@@ -283,4 +286,86 @@ public class MovieApiController {
         return movieListResponse;
     }
 
+
+
+    @RequestMapping("/movieInfo")
+    public String movieInfo(String MovieCd){
+
+        String movieInfoResponse = "";
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("movieCd","20204261");
+
+        try {
+            // KOBIS 오픈 API Rest Client를 통해 호출
+            KobisOpenAPIRestService service = new KobisOpenAPIRestService(key);
+
+            movieInfoResponse = service.getMovieInfo(true, paramMap);
+
+            //JSON Parser 객체 생성
+            JSONParser jsonParser = new JSONParser();
+
+            //Parser로 문자열 데이터를 객체로 변환
+            Object obj = jsonParser.parse(movieInfoResponse);
+
+            //파싱한 obj를 JSONObject 객체로 변환
+            JSONObject jsonObject = (JSONObject) obj;
+
+            //JSON object -> Java Object(Entity) 변환하기위한 Mapper 선언
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            //새로운 JSONObject 선언
+            JSONObject movieInfoResultObject = new JSONObject();
+
+            //차근차근 parsing하기
+            JSONObject parse_movieInfoResult = (JSONObject) jsonObject.get("movieInfoResult");
+
+            //영화 정보
+            JSONObject parse_movieInfo = (JSONObject) parse_movieInfoResult.get("movieInfo");
+
+            //영화 코드
+            String movieCd = (String) parse_movieInfo.get("movieCd");
+            movieInfoResultObject.put("movieCd", movieCd);
+
+            //영화 한글명
+            String movieNm = (String) parse_movieInfo.get("movieNm");
+            movieInfoResultObject.put("movieNm", movieNm);
+
+            //영화 영문명
+            String movieEn = (String) parse_movieInfo.get("movieEn");
+            movieInfoResultObject.put("movieEn", movieEn);
+
+            //영화 원문명
+            String movieOg = (String) parse_movieInfo.get("movieOg");
+            movieInfoResultObject.put("movieOg", movieOg);
+
+            //제작연도
+            String prdtYear = (String) parse_movieInfo.get("prdtYear");
+            movieInfoResultObject.put("prdtYear", prdtYear);
+
+            //오픈일자
+            String opentDt = (String) parse_movieInfo.get("opneDt");
+            movieInfoResultObject.put("opentDt", opentDt);
+
+            //제작상태
+            String prdtStatNm = (String) parse_movieInfo.get("prdtStatNm");
+            movieInfoResultObject.put("prdtStatNm", prdtStatNm);
+
+
+            //영화유형
+            String typeNm = (String) parse_movieInfo.get("typeNm");
+            movieInfoResultObject.put("typeNm", typeNm);
+
+
+
+            //JSON object -> Java Object(Entity) 변환
+            MovieInfo movieInfo = objectMapper.readValue(movieInfoResultObject.toString(), MovieInfo.class);
+
+            movieInfoRepository.save(movieInfo);
+
+        }catch(Exception e){
+            e.getMessage();
+        }
+        return movieInfoResponse;
+    }
 }
