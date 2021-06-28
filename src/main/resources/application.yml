@@ -1,10 +1,10 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://27.96.130.90:3306/Movie_Toy?serverTimezone=Asia/Seoul
-    username: root
-    password: Toyproject1!
-
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://27.96.130.90:3306/spring_batch
+      username: root
+      password: Toyproject1!
   jpa:
     open-in-view: true
     hibernate:

@@ -2,6 +2,7 @@ package com.locky.moveapitest.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.locky.moveapitest.domain.*;
+import com.locky.moveapitest.domain.object.MovieListDirectors;
 import kr.or.kobis.kobisopenapi.consumer.rest.KobisOpenAPIRestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -182,7 +182,7 @@ public class MovieApiController {
 
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("curPage","1");
-        paramMap.put("itemPerPage", "100");
+        paramMap.put("itemPerPage", "10");
         paramMap.put("movieNm", "");
         paramMap.put("directorNm", "");
         paramMap.put("openStartDt", "");
@@ -252,10 +252,11 @@ public class MovieApiController {
 
                 String genreAlt = (String) movieListObject.get("genreAlt");
                 movieListResultObject.put("genreAlt", genreAlt);
-
+/*
                 //영화감독(directors) Array 추출
                 StringBuilder directorsList = new StringBuilder();
                 JSONArray parse_directorsList = (JSONArray) movieListObject.get("directors");
+
                 for (int j = 0; j < parse_directorsList.size(); j++) {
                     JSONObject directorsListObject = (JSONObject) parse_directorsList.get(j);
                     String directors = (String) directorsListObject.get("peopleNm");
@@ -263,11 +264,14 @@ public class MovieApiController {
                     directorsList.append(directors);
                     movieListResultObject.put("directors", directorsList.toString());
                 }
+/*
 
+/*
                 //제작사(companys) Array 추출
                 //제작사 코드 빼고 제작사명만 넣는다.
                 StringBuilder companysList = new StringBuilder();
                 JSONArray parse_companysList = (JSONArray) movieListObject.get("companys");
+
                 for (int k = 0; k < parse_companysList.size(); k++) {
                     JSONObject companysListObject = (JSONObject) parse_companysList.get(k);
                     String companyNm = (String) companysListObject.get("companyNm");
@@ -275,9 +279,20 @@ public class MovieApiController {
                     companysList.append(companyNm);
                     movieListResultObject.put("companys", companysList.toString());
                 }
+*/
+                MovieListDirectors movieListDirectors = new MovieListDirectors();
+                //영화감독(directors) Array 추출
+                JSONArray parse_directorsList = (JSONArray) movieListObject.get("directors");
+                for (int j = 0; j < parse_directorsList.size(); j++) {
+                    JSONObject directorsListObject = (JSONObject) parse_directorsList.get(j);
+                    String directors = (String) directorsListObject.get("peopleNm");
+                    movieListDirectors.setDirectors("directors");
+                }
+
                 //JSON object -> Java Object(Entity) 변환
                 MovieList movieList = objectMapper.readValue(movieListResultObject.toString(), MovieList.class);
-                //movieListRepository.save(movieList);
+                movieList.setMovieListDirectors(movieListDirectors);
+                movieListRepository.save(movieList);
             }
 
         }catch(Exception e){
@@ -332,20 +347,20 @@ public class MovieApiController {
             movieInfoResultObject.put("movieNm", movieNm);
 
             //영화 영문명
-            String movieEn = (String) parse_movieInfo.get("movieEn");
-            movieInfoResultObject.put("movieEn", movieEn);
+            String movieNmEn = (String) parse_movieInfo.get("movieNmEn");
+            movieInfoResultObject.put("movieNmEn", movieNmEn);
 
             //영화 원문명
-            String movieOg = (String) parse_movieInfo.get("movieOg");
-            movieInfoResultObject.put("movieOg", movieOg);
+            String movieNmOg = (String) parse_movieInfo.get("movieNmOg");
+            movieInfoResultObject.put("movieNmOg", movieNmOg);
 
             //제작연도
             String prdtYear = (String) parse_movieInfo.get("prdtYear");
             movieInfoResultObject.put("prdtYear", prdtYear);
 
             //오픈일자
-            String opentDt = (String) parse_movieInfo.get("opneDt");
-            movieInfoResultObject.put("opentDt", opentDt);
+            String openDt = (String) parse_movieInfo.get("openDt");
+            movieInfoResultObject.put("openDt", openDt);
 
             //제작상태
             String prdtStatNm = (String) parse_movieInfo.get("prdtStatNm");

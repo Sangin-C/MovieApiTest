@@ -18,15 +18,15 @@ import javax.persistence.Id;
 @Builder
 public class MovieInfo {
 
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     private String movieCd;
     private String movieNm;
-    private String movieEn;
-    private String movieOg;
+    private String movieNmEn;
+    private String movieNmOg;
     private String prdtYear;
-    private String opentDt;
+    private String openDt;
     private String prdtStatNm;
     private String typeNm;
 

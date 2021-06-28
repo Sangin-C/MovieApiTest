@@ -1,14 +1,13 @@
 package com.locky.moveapitest.domain;
 
+import com.locky.moveapitest.converter.DataConverter;
+import com.locky.moveapitest.domain.object.MovieListDirectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -32,9 +31,9 @@ public class MovieList {
     private String repNationNm;
     private String repGenreNm;
     private String directors;
-    /*private String peopleNm;*/
     private String companys;
-/*    private String companyCd;
-    private String companyNm;*/
+
+    @Convert(converter = DataConverter.class)
+    private MovieListDirectors movieListDirectors;
 
 }
