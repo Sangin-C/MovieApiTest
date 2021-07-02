@@ -17,19 +17,35 @@ public class MovieList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
     private String movieCd;
+
     private String movieNm;
+
     private String movieNmEn;
+
     private String prdtYear;
+
     private String openDt;
+
     private String typeNm;
+
     private String prdtStatNm;
+
     private String nationAlt;
+
     private String genreAlt;
+
     private String repNationNm;
+
     private String repGenreNm;
+
     @Column(columnDefinition = "json")
     private String directors;
+
     @Column(columnDefinition = "json")
     private String companys;
+
+    @Column(length = 1, columnDefinition = "char")
+    private String batchStatus;
 }
