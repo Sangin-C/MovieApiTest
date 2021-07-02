@@ -1,7 +1,5 @@
 package com.locky.moveapitest.domain;
 
-import com.locky.moveapitest.converter.DataConverter;
-import com.locky.moveapitest.domain.object.MovieListDirectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,10 +28,8 @@ public class MovieList {
     private String genreAlt;
     private String repNationNm;
     private String repGenreNm;
+    @Column(columnDefinition = "json")
     private String directors;
+    @Column(columnDefinition = "json")
     private String companys;
-
-    @Convert(converter = DataConverter.class)
-    private MovieListDirectors movieListDirectors;
-
 }
